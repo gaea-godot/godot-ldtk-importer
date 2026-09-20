@@ -70,6 +70,45 @@ static func create_world(
 
 	return world
 
+
+static func create_world_resource(
+		name: String,
+		iid: String,
+		levels: Array
+) -> LDTKWorldResource:
+
+	Util.timer_start(Util.DebugTime.GENERAL)
+	var world = LDTKWorldResource.new()
+	world.resource_name = name
+	world.iid = iid
+
+	# Update World_Rect
+	var x1 = world.rect.position.x
+	var x2 = world.rect.end.x
+	var y1 = world.rect.position.y
+	var y2 = world.rect.end.y
+
+
+	for level: Node2D in levels:
+		world.levels.set(level.iid, load(level.scene_file_path))
+
+		x1 = min(x1, level.position.x)
+		y1 = min(y1, level.position.y)
+		x2 = max(x2, level.position.x + level.size.x)
+		y2 = max(y2, level.position.y + level.size.y)
+		level.free()
+	
+	world.rect.position = Vector2i(x1, y1)
+	world.rect.end = Vector2i(x2, y2)
+
+	Util.timer_finish("World Created", 1)
+
+	# Post-Import
+	if (Util.options.world_post_import):
+		world = PostImport.run_world_post_import(world, Util.options.world_post_import)
+
+	return world
+
 static func create_multi_world(
 		name: String,
 		iid: String,
