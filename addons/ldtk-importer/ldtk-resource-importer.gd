@@ -216,10 +216,10 @@ func _import(
 	# Detect Multi-Worlds
 	var world_iid: String = world_data.iid
 
-	var world: LDTKWorldResource
+	var world: LDTKWorldData
 	if world_data.worldLayout == null:
 		return ERR_INVALID_DATA
-		var worlds: Array[LDTKWorldResource] = []
+		var worlds: Array[LDTKWorldData] = []
 		var world_instances: Array = world_data.worlds
 		# Build each world instance
 		for world_instance in world_instances:
@@ -277,7 +277,7 @@ func _import(
 #endregion
 
 
-func save_world(world: LDTKWorldResource, save_path: String, gen_files: Array[String]) -> Error:
+func save_world(world: LDTKWorldData, save_path: String, gen_files: Array[String]) -> Error:
 	Util.print("item_save", "Saving World [color=#fe8019][i]'%s'[/i][/color]" % [save_path], 1)
 
 	var world_path = "%s.%s" % [save_path, _get_save_extension()]
