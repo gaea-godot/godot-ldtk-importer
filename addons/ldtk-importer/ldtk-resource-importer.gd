@@ -147,8 +147,8 @@ func _get_import_options(path, index):
 			"hint_string": "*.gd;GDScript"
 		},
 		{
-			# Define a post-import script to apply on imported Worlds.
-			"name": "world_post_import",
+			# Define a post-import script to apply on imported WorldDatas.
+			"name": "world_resource_post_import",
 			"default_value": "",
 			"property_hint": PROPERTY_HINT_FILE,
 			"hint_string": "*.gd;GDScript"

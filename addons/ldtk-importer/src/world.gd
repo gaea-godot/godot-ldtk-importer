@@ -101,8 +101,8 @@ static func create_world_resource(name: String, iid: String, levels: Array) -> L
 	Util.timer_finish("World Created", 1)
 
 	# Post-Import
-	if Util.options.world_post_import:
-		world = PostImport.run_world_post_import(world, Util.options.world_post_import)
+	if Util.options.world_resource_post_import:
+		world = PostImport.run_world_resource_post_import(world, Util.options.world_resource_post_import)
 
 	return world
 
