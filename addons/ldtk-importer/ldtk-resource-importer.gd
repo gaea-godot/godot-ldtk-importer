@@ -216,10 +216,8 @@ func _import(
 	# Detect Multi-Worlds
 	var world_iid: String = world_data.iid
 
-	var world: LDTKWorldData
+	var data: LDTKData = LDTKData.new()
 	if world_data.worldLayout == null:
-		return ERR_INVALID_DATA
-		var worlds: Array[LDTKWorldData] = []
 		var world_instances: Array = world_data.worlds
 		# Build each world instance
 		for world_instance in world_instances:
@@ -229,10 +227,11 @@ func _import(
 			var world_resource := World.create_world_resource(
 				world_instance_name, world_instance_iid, levels
 			)
-			worlds.append(world_resource)
+			data.worlds.append(world_resource)
 
 		#world = World.create_multi_world(world_name, world_iid, world_nodes)
 	else:
+		var world: LDTKWorldData
 		if Util.options.verbose_output:
 			Util.print("block", "Levels")
 		var levels := Level.build_levels(world_data, definitions, base_dir, external_levels)
@@ -253,10 +252,11 @@ func _import(
 		if Util.options.verbose_output:
 			Util.print("block", "Save World")
 		world = World.create_world_resource(world_name, world_iid, packed_levels)
+		data.worlds.append(world)
 
 	# Save World as PackedScene
 	Util.timer_start(Util.DebugTime.SAVE)
-	var err = save_world(world, save_path, gen_files)
+	var err = save_data(data, save_path, gen_files)
 	Util.timer_finish("World Saved", 1)
 
 	if Util.options.verbose_output:
@@ -275,6 +275,16 @@ func _import(
 
 
 #endregion
+
+
+func save_data(data: LDTKData, save_path: String, gen_files: Array[String]) -> Error:
+	Util.print("item_save", "Saving LDTKData [color=#fe8019][i]'%s'[/i][/color]" % [save_path], 1)
+
+	var path = "%s.%s" % [save_path, _get_save_extension()]
+	var err = ResourceSaver.save(data, path)
+	if err == OK:
+		gen_files.append(path)
+	return err
 
 
 func save_world(world: LDTKWorldData, save_path: String, gen_files: Array[String]) -> Error:
