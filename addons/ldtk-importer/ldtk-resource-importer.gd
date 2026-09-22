@@ -7,7 +7,7 @@ enum Presets { DEFAULT }
 enum LevelSaveExtensions { SCN, TSCN }
 
 const Util = preload("src/util/util.gd")
-const World = preload("src/world.gd")
+const World = preload("src/world.gd") 
 const Level = preload("src/level.gd")
 const Tileset = preload("src/tileset.gd")
 const DefinitionUtil = preload("src/util/definition_util.gd")
@@ -223,7 +223,11 @@ func _import(
 		for world_instance in world_instances:
 			var world_instance_name: String = world_instance.identifier
 			var world_instance_iid: String = world_instance.iid
-			var levels := Level.build_levels(world_instance, definitions, base_dir, external_levels)
+			var levels := pack_levels(
+				Level.build_levels(world_instance, definitions, base_dir, external_levels),
+				base_dir,
+				gen_files
+			)
 			var world_resource := World.create_world_resource(
 				world_instance_name, world_instance_iid, levels
 			)
@@ -234,24 +238,15 @@ func _import(
 		var world: LDTKWorldData
 		if Util.options.verbose_output:
 			Util.print("block", "Levels")
-		var levels := Level.build_levels(world_data, definitions, base_dir, external_levels)
-
-		# Save Levels (after Level Post-Import)
-		var levels_path := base_dir + "levels/"
-		var directory = DirAccess.open(base_dir)
-		if not directory.dir_exists(levels_path):
-			directory.make_dir(levels_path)
-
-		# Resolve Refs + Cleanup Resolvers. We don't want to save 'NodePathResolver' in the Level scene.
-		#if (Util.options.verbose_output): Util.print("block", "References")
-		if Util.options.verbose_output:
-			Util.print("block", "Save Levels")
-		Util.handle_references()
-		var packed_levels = save_levels(levels, levels_path, gen_files)
+		var levels := pack_levels(
+			Level.build_levels(world_data, definitions, base_dir, external_levels),
+			base_dir,
+			gen_files
+		)
 
 		if Util.options.verbose_output:
 			Util.print("block", "Save World")
-		world = World.create_world_resource(world_name, world_iid, packed_levels)
+		world = World.create_world_resource(world_name, world_iid, levels)
 		data.worlds.append(world)
 
 	# Save World as PackedScene
@@ -295,6 +290,26 @@ func save_world(world: LDTKWorldData, save_path: String, gen_files: Array[String
 	if err == OK:
 		gen_files.append(world_path)
 	return err
+
+
+func pack_levels(
+	levels: Array[LDTKLevel],
+	base_dir: String,
+	gen_files: Array[String],
+) -> Array[LDTKLevel]:
+	if (Util.options.verbose_output): Util.print("block", "Save World")
+
+	var levels_path := base_dir + 'levels/'
+	var directory = DirAccess.open(base_dir)
+	if not directory.dir_exists(levels_path):
+		directory.make_dir(levels_path)
+
+	# Resolve Refs + Cleanup Resolvers. We don't want to save 'NodePathResolver' in the Level scene.
+	#if (Util.options.verbose_output): Util.print("block", "References")
+	Util.handle_references()
+	var packed_levels = save_levels(levels, levels_path, gen_files)
+
+	return save_levels(levels, levels_path, gen_files)
 
 
 func save_levels(

@@ -5,9 +5,10 @@ var ldtk_plugin
 var ldtk_resource_plugin
 var config = ConfigFile.new()
 
+
 func _enter_tree() -> void:
-	ldtk_plugin = preload("ldtk-importer.gd").new()
-	ldtk_resource_plugin = preload("ldtk-resource-importer.gd").new()
+	ldtk_plugin = preload("uid://coq6t2u1iw731").new()
+	ldtk_resource_plugin = preload("uid://cwaa5sj46jitk").new()
 	add_import_plugin(ldtk_plugin)
 	add_import_plugin(ldtk_resource_plugin)
 
@@ -15,7 +16,13 @@ func _enter_tree() -> void:
 	var err = config.load("res://addons/ldtk-importer/plugin.cfg")
 	var version = config.get_value("plugin", "version", "0.0")
 
-	print_rich("[color=#ffcc00]█ Godot-LDtk-Importer █[/color] %s | [url=https://gleeson.dev]@gleeson.dev[/url] | [url=https://github.com/heygleeson/godot-ldtk-importer]View on Github[/url]" % [version])
+	print_rich(
+		(
+			"[color=#ffcc00]█ Godot-LDtk-Importer █[/color] %s | [url=https://gleeson.dev]@gleeson.dev[/url] | [url=https://github.com/heygleeson/godot-ldtk-importer]View on Github[/url]"
+			% [version]
+		)
+	)
+
 
 func _exit_tree() -> void:
 	remove_import_plugin(ldtk_plugin)
