@@ -1,5 +1,5 @@
 @tool
-@icon("ldtk-level.svg")
+@icon("ldtk-level-data.svg")
 class_name LDTKLevelData
 extends Resource
 

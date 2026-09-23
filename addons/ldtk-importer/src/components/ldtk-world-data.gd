@@ -1,5 +1,5 @@
 @tool
-@icon("ldtk-world.svg")
+@icon("ldtk-world-data.svg")
 class_name LDTKWorldData
 extends Resource
 
